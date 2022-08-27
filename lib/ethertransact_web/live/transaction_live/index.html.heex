@@ -1,0 +1,54 @@
+<h1>Listing Transactions</h1>
+
+<%= if @live_action in [:new] do %>
+  <.modal return_to={Routes.transaction_index_path(@socket, :index)}>
+    <.live_component
+      module={EthertransactWeb.TransactionLive.FormComponent}
+      id={@transaction.id || :new}
+      title={@page_title}
+      action={@live_action}
+      transaction={@transaction}
+      return_to={Routes.transaction_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <tbody id="transactions">
+    <%= for transaction <- @transactions do %>
+      <tr id={"hash-#{transaction.id}"}>
+        <th>Hash:</th>
+        <td><%= transaction.hash %></td>
+      </tr>
+      <tr id={"from-#{transaction.id}"}>
+        <th>From:</th>
+        <td><%= transaction.from %></td>
+      </tr>
+      <tr id={"destination-#{transaction.id}"}>
+        <th>To:</th>
+        <td><%= transaction.to %></td>
+      </tr>
+      <tr id={"block-hash-#{transaction.id}"}>
+        <th>Block hash:</th>
+        <td><%= transaction.block_hash %></td>
+      </tr>
+      <tr id={"block-number-#{transaction.id}"}>
+        <th>Block number:</th>
+        <td><%= transaction.block_number %></td>
+      </tr>
+      <tr id={"status-#{transaction.id}"}>
+        <th>Status:</th>
+        <td>
+          <%= if transaction.complete == true do %>
+            <span>Complete</span>
+          <% else %>
+            <span>Pending</span>
+          <% end %>
+        </td>
+      </tr>
+      <tr><th></th><td></td></tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Transaction", to: Routes.transaction_index_path(@socket, :new) %></span>

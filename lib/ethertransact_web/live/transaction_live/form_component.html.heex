@@ -1,0 +1,18 @@
+<div>
+  <h2><%= @title %></h2>
+
+  <.form
+    let={f}
+    for={@changeset}
+    id="transaction-form"
+    phx-target={@myself}
+    phx-submit="save">
+  
+    <%= label f, :hash %>
+    <%= text_input f, :hash %>
+  
+    <div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div>
+  </.form>
+</div>
