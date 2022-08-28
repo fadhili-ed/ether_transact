@@ -17,7 +17,7 @@ defmodule Ethertransact.Application do
       # Start the Endpoint (http/https)
       EthertransactWeb.Endpoint,
       # Start the payment confirmation worker
-      Ethertransact.ConfirmTransaction
+      {Ethertransact.ConfirmTransaction, name: Ethertransact.ConfirmTransaction}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

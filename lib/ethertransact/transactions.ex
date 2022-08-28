@@ -56,6 +56,7 @@ defmodule Ethertransact.Transactions do
     %Transaction{}
     |> Transaction.changeset(attrs)
     |> Repo.insert()
+    |> restart_genserver()
   end
 
   @doc """
@@ -89,6 +90,15 @@ defmodule Ethertransact.Transactions do
     block_number
     |> Transaction.update_pending_transaction_query()
     |> Repo.update_all([])
+  end
+
+  defp restart_genserver({:ok, _transaction} = result) do
+    Supervisor.restart_child(Ethertransact.Supervisor, Ethertransact.ConfirmTransaction)
+    result
+  end
+
+  defp restart_genserver(result) do
+    result
   end
 
   defp convert_block_number_to_decimal(%{"block_number" => block_number} = attrs) do

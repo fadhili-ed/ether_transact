@@ -31,4 +31,8 @@ defmodule Ethertransact.Transactions.Transaction do
       update: [set: [complete: true]]
     )
   end
+
+  def pending_transactions do
+    from(t in __MODULE__, where: t.complete == false)
+  end
 end

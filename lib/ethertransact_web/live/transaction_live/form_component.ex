@@ -26,10 +26,28 @@ defmodule EthertransactWeb.TransactionLive.FormComponent do
       {:ok, transaction} ->
         create_transaction(socket, transaction)
 
+      {:error, _} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Oops, a problem occured while fetching the hash, please try again")
+         |> push_redirect(to: socket.assigns.return_to)}
+    end
+  end
+
+  defp create_transaction(socket, transaction) do
+    with {:ok, _transaction} <-
+           Transactions.create_transaction(transaction) do
+      {:noreply,
+       socket
+       |> put_flash(:info, "Transaction receieved successfully")
+       |> push_redirect(to: socket.assigns.return_to)}
+    else
       {:error,
        %Ecto.Changeset{
          errors: [
-           hash: {"has already been taken", [constraint: :unique]}
+           hash:
+             {"has already been taken",
+              [constraint: :unique, constraint_name: "transactions_hash_index"]}
          ]
        }} ->
         {:noreply,
@@ -40,20 +58,8 @@ defmodule EthertransactWeb.TransactionLive.FormComponent do
       {:error, _} ->
         {:noreply,
          socket
-         |> put_flash(:error, "Oops, a problem occured, please try again")
+         |> put_flash(:error, "Sorry, an error occured please try again.")
          |> push_redirect(to: socket.assigns.return_to)}
-    end
-  end
-
-  defp create_transaction(socket, transaction) do
-    with {:ok, _transaction} <- Transactions.create_transaction(transaction) do
-      {:noreply,
-       socket
-       |> put_flash(:info, "Transaction receieved successfully")
-       |> push_redirect(to: socket.assigns.return_to)}
-    else
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
     end
   end
 end

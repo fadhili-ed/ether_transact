@@ -1,8 +1,10 @@
 defmodule Ethertransact.ConfirmTransaction do
-  use GenServer
+  use GenServer, restart: :transient
 
   alias Ethertransact.EtherTransactApi
+  alias Ethertransact.Repo
   alias Ethertransact.Transactions
+  alias Ethertransact.Transactions.Transaction
   alias Ethertransact.Utils
 
   @update_interval 10000
@@ -20,13 +22,24 @@ defmodule Ethertransact.ConfirmTransaction do
 
   @impl true
   def handle_info(:confirm_transaction_payment, state) do
-    {:ok, block_number} = EtherTransactApi.fetch_most_recent_block_number()
-    block_number = Utils.convert_hex_to_decimal(block_number)
+    case EtherTransactApi.fetch_most_recent_block_number() do
+      {:ok, block_number} ->
+        pending_transactions = Transaction.pending_transactions() |> Repo.all()
 
-    confirm_transactions(block_number)
+        if pending_transactions == [] do
+          {:stop, :normal, state}
+        else
+          block_number = Utils.convert_hex_to_decimal(block_number)
 
-    schedule_work(:confirm_transaction_payment)
-    {:noreply, state}
+          confirm_transactions(block_number)
+
+          schedule_work(:confirm_transaction_payment)
+          {:noreply, state}
+        end
+
+      {:error, message} ->
+        {:noreply, message}
+    end
   end
 
   def schedule_work(message) do
