@@ -19,7 +19,7 @@ defmodule Ethertransact.Transactions do
 
   """
   def list_transactions do
-    Repo.all(Transaction)
+    Repo.all(from t in Transaction, order_by: [desc: t.id])
   end
 
   @doc """
@@ -90,6 +90,19 @@ defmodule Ethertransact.Transactions do
     block_number
     |> Transaction.update_pending_transaction_query()
     |> Repo.update_all([])
+    |> broadcast()
+  end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Ethertransact.PubSub, "transactions")
+  end
+
+  defp broadcast({0, _result} = error), do: error
+
+  defp broadcast({value, result}) do
+    Phoenix.PubSub.broadcast(Ethertransact.PubSub, "transactions", {:ok, :transaction})
+
+    {value, result}
   end
 
   defp restart_genserver({:ok, _transaction} = result) do
