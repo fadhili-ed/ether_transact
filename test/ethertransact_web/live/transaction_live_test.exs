@@ -4,33 +4,7 @@ defmodule EthertransactWeb.TransactionLiveTest do
   import Phoenix.LiveViewTest
   import Ethertransact.TransactionsFixtures
 
-  @create_attrs %{
-    block_hash: "some block_hash",
-    block_number: 42,
-    from: "some from",
-    hash: "some hash",
-    status: "some status",
-    to: "some to",
-    value: "some value"
-  }
-  @update_attrs %{
-    block_hash: "some updated block_hash",
-    block_number: 43,
-    from: "some updated from",
-    hash: "some updated hash",
-    status: "some updated status",
-    to: "some updated to",
-    value: "some updated value"
-  }
-  @invalid_attrs %{
-    block_hash: nil,
-    block_number: nil,
-    from: nil,
-    hash: nil,
-    status: nil,
-    to: nil,
-    value: nil
-  }
+  @hash "0x9b37a571fdd82718aaaaf485c59d48050d59339e607023101dffee9944c52aa5"
 
   defp create_transaction(_) do
     transaction = transaction_fixture()
@@ -55,80 +29,14 @@ defmodule EthertransactWeb.TransactionLiveTest do
 
       assert_patch(index_live, Routes.transaction_index_path(conn, :new))
 
-      assert index_live
-             |> form("#transaction-form", transaction: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
       {:ok, _, html} =
         index_live
-        |> form("#transaction-form", transaction: @create_attrs)
+        |> form("#transaction-form", transaction: %{hash: @hash})
         |> render_submit()
         |> follow_redirect(conn, Routes.transaction_index_path(conn, :index))
 
-      assert html =~ "Transaction created successfully"
-      assert html =~ "some block_hash"
-    end
-
-    test "updates transaction in listing", %{conn: conn, transaction: transaction} do
-      {:ok, index_live, _html} = live(conn, Routes.transaction_index_path(conn, :index))
-
-      assert index_live |> element("#transaction-#{transaction.id} a", "Edit") |> render_click() =~
-               "Edit Transaction"
-
-      assert_patch(index_live, Routes.transaction_index_path(conn, :edit, transaction))
-
-      assert index_live
-             |> form("#transaction-form", transaction: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      {:ok, _, html} =
-        index_live
-        |> form("#transaction-form", transaction: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, Routes.transaction_index_path(conn, :index))
-
-      assert html =~ "Transaction updated successfully"
-      assert html =~ "some updated block_hash"
-    end
-
-    test "deletes transaction in listing", %{conn: conn, transaction: transaction} do
-      {:ok, index_live, _html} = live(conn, Routes.transaction_index_path(conn, :index))
-
-      assert index_live |> element("#transaction-#{transaction.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#transaction-#{transaction.id}")
-    end
-  end
-
-  describe "Show" do
-    setup [:create_transaction]
-
-    test "displays transaction", %{conn: conn, transaction: transaction} do
-      {:ok, _show_live, html} = live(conn, Routes.transaction_show_path(conn, :show, transaction))
-
-      assert html =~ "Show Transaction"
-      assert html =~ transaction.block_hash
-    end
-
-    test "updates transaction within modal", %{conn: conn, transaction: transaction} do
-      {:ok, show_live, _html} = live(conn, Routes.transaction_show_path(conn, :show, transaction))
-
-      assert show_live |> element("a", "Edit") |> render_click() =~
-               "Edit Transaction"
-
-      assert_patch(show_live, Routes.transaction_show_path(conn, :edit, transaction))
-
-      assert show_live
-             |> form("#transaction-form", transaction: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      {:ok, _, html} =
-        show_live
-        |> form("#transaction-form", transaction: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, Routes.transaction_show_path(conn, :show, transaction))
-
-      assert html =~ "Transaction updated successfully"
-      assert html =~ "some updated block_hash"
+      assert html =~ "Transaction receieved successfully"
+      assert html =~ @hash
     end
   end
 end

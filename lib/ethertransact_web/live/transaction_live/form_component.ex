@@ -15,6 +15,16 @@ defmodule EthertransactWeb.TransactionLive.FormComponent do
   end
 
   @impl true
+  def handle_event("validate", %{"transaction" => transaction_params}, socket) do
+    changeset =
+      socket.assigns.transaction
+      |> Transactions.change_transaction(transaction_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign(socket, :changeset, changeset)}
+  end
+
+  @impl true
   def handle_event("save", %{"transaction" => transaction_params}, socket) do
     save_transaction(socket, socket.assigns.action, transaction_params)
   end

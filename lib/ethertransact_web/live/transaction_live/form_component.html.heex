@@ -6,6 +6,7 @@
     for={@changeset}
     id="transaction-form"
     phx-target={@myself}
+    phx-change="validate"
     phx-submit="save">
   
     <%= label f, :hash %>
