@@ -46,10 +46,15 @@ defmodule Ethertransact.TransactionsTest do
 
     test "create_transaction/1 with valid data creates a transaction" do
       assert {:ok, %Transaction{} = transaction} = Transactions.create_transaction(@valid_attrs)
-      assert transaction.block_hash == "0xbaee22af41ce5cb4d28a6a377da26f4fc4f9d893fdfaa6878fb732f42367a947"
-      assert transaction.block_number == 4954885
+
+      assert transaction.block_hash ==
+               "0xbaee22af41ce5cb4d28a6a377da26f4fc4f9d893fdfaa6878fb732f42367a947"
+
+      assert transaction.block_number == 4_954_885
       assert transaction.from == "0x0fe426d8f95510f4f0bac19be5e1252c4127ee00"
-      assert transaction.hash == "0x7b6d0e8d812873260291c3f8a9fa99a61721a033a01e5c5af3ceb5e1dc9e7bd0"
+
+      assert transaction.hash ==
+               "0x7b6d0e8d812873260291c3f8a9fa99a61721a033a01e5c5af3ceb5e1dc9e7bd0"
     end
 
     test "update_incomplete_transactions/1" do

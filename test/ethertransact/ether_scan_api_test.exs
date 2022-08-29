@@ -3,14 +3,14 @@ defmodule Ethertransact.EtherScanApiTest do
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
 
   setup_all do
-    HTTPoison.start
+    HTTPoison.start()
     :ok
   end
 
   test "fetch a valid hash" do
     use_cassette "request_transaction" do
       assert {:ok, _results} =
-        Ethertransact.EtherTransactApi.fetch_transaction_by_hash(
+               Ethertransact.EtherTransactApi.fetch_transaction_by_hash(
                  "0x7b6d0e8d812873260291c3f8a9fa99a61721a033a01e5c5af3ceb5e1dc9e7bd0"
                )
     end
@@ -18,7 +18,8 @@ defmodule Ethertransact.EtherScanApiTest do
 
   test "fetch an invalid hash" do
     use_cassette "request_invalid_transaction" do
-      assert {:error, _results} = Ethertransact.EtherTransactApi.fetch_transaction_by_hash("invalid")
+      assert {:error, _results} =
+               Ethertransact.EtherTransactApi.fetch_transaction_by_hash("invalid")
     end
   end
 

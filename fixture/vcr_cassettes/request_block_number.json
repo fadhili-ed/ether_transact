@@ -12,12 +12,12 @@
     },
     "response": {
       "binary": false,
-      "body": "{\"status\":\"0\",\"message\":\"NOTOK\",\"result\":\"Max rate limit reached, please use API Key for higher rate limit\"}",
+      "body": "{\"jsonrpc\":\"2.0\",\"id\":83,\"result\":\"0xeb82dc\"}\n",
       "headers": {
         "Server": "nginx",
-        "Date": "Mon, 29 Aug 2022 05:37:56 GMT",
+        "Date": "Mon, 29 Aug 2022 13:56:50 GMT",
         "Content-Type": "application/json; charset=utf-8",
-        "Content-Length": "108",
+        "Content-Length": "46",
         "Connection": "keep-alive",
         "Cache-Control": "private",
         "Access-Control-Allow-Origin": "*",
