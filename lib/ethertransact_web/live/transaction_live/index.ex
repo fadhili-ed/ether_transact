@@ -22,7 +22,7 @@ defmodule EthertransactWeb.TransactionLive.Index do
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Transaction")
+    |> assign(:page_title, "Enter transaction hash")
     |> assign(:transaction, %Transaction{})
   end
 

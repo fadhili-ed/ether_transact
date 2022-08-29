@@ -49,7 +49,7 @@ defmodule EthertransactWeb.TransactionLive.FormComponent do
            Transactions.create_transaction(transaction) do
       {:noreply,
        socket
-       |> put_flash(:info, "Transaction receieved successfully")
+       |> put_flash(:info, "Payment receieved successfully")
        |> push_redirect(to: socket.assigns.return_to)}
     else
       {:error,
@@ -62,7 +62,7 @@ defmodule EthertransactWeb.TransactionLive.FormComponent do
        }} ->
         {:noreply,
          socket
-         |> put_flash(:error, "Transaction has already been entered!")
+         |> put_flash(:error, "Transaction hash has already been entered!")
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, _} ->
